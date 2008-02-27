@@ -1,0 +1,30 @@
+<h1 tal:replace="structure context/manage_page_header">HEADER</h1>
+<h1 tal:replace="structure context/manage_tabs">TABS</h1>
+
+<div tal:define="updated context/addItemsToSession;">
+
+<h3> Test Adding Items to Session </h3>
+
+<p tal:content="updated" />
+
+<form action="addItemsToSessionForm" method="POST">
+<h3> Add Items to Session </h3>
+
+<textarea name="items:lines" rows="5" cols="65"></textarea><br />
+<input type="submit" value="Add" />
+
+</form>
+
+<div tal:define="session request/SESSION">
+
+<dl tal:repeat="item session/items">
+ <dt tal:content="python:item[0]">KEY</dt>
+ <dd tal:content="python:item[1]">VALUE</dd>
+</dl>
+
+</div>
+
+</div>
+
+<h1 tal:replace="structure context/manage_page_footer">FOOTER</h1>
+
