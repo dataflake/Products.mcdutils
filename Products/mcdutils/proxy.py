@@ -92,9 +92,10 @@ class MemCacheProxy(SimpleItem, PropertyManager):
         """ See IMemCacheProxy.
         """
         mapping = self._cached.get(key)
-
         if mapping is None:
             mapping = self._get_remote(key)
+        # Force this mapping to clean up after the transaction.
+        mapping.register(mapping)
 
         return mapping
 

@@ -46,10 +46,19 @@ class MemCacheMapping(Explicit, PersistentMapping):
         """
         return self._p_key
 
+    def _clean(self):
+        # Remove from proxy cache to force an update
+        # from memcached during next access.
+        try:
+            del self._p_proxy._cached[self._p_key]
+        except KeyError:
+            pass
+
     security.declarePrivate('abort')
     def abort(self, txn):
         """ See IDataManager.
         """
+        self._clean()
 
     security.declarePrivate('tpc_begin')
     def tpc_begin(self, txn):
@@ -77,6 +86,7 @@ class MemCacheMapping(Explicit, PersistentMapping):
         self._p_proxy.set(self._p_key, self) # no error handling
         self._p_changed = 0
         self._p_joined = False
+        self._clean()
 
     security.declarePrivate('tpc_abort')
     def tpc_abort(self, txn):
@@ -84,6 +94,7 @@ class MemCacheMapping(Explicit, PersistentMapping):
         """
         self._p_joined = False
         self._p_changed = 0
+        self._clean()
 
     security.declarePrivate('sortKey')
     def sortKey(self):
