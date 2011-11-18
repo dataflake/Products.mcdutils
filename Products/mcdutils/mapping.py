@@ -83,7 +83,8 @@ class MemCacheMapping(Explicit, PersistentMapping):
     def tpc_finish(self, txn):
         """ See IDataManager.
         """
-        self._p_proxy.set(self._p_key, self) # no error handling
+        if self._p_changed:
+            self._p_proxy.set(self._p_key, self) # no error handling
         self._p_changed = 0
         self._p_joined = False
         self._clean()
