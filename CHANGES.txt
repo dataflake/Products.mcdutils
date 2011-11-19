@@ -4,7 +4,7 @@ Changes
 0.2b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Include test runner in buildout and fix broken tests.
 
 
 0.2b1 (2011-11-19)

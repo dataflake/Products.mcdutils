@@ -1,7 +1,6 @@
 """ Functional tests for Products.mcdutils.proxy
-
-$Id: test_proxy.py,v 1.3 2006/05/31 20:57:16 tseaver Exp $
 """
+
 import unittest
 
 class MemCacheSDCFuncTests(unittest.TestCase):
@@ -37,7 +36,7 @@ class MemCacheSDCFuncTests(unittest.TestCase):
         mapping = sdc.new_or_existing('foobar')
         self.failUnless(isinstance(mapping, MemCacheMapping))
         self.failIf(mapping._p_changed)
-        self.failIf(mapping._p_joined)
+        self.failUnless(mapping._p_joined)
         mapping['abc'] = 1345
         self.failUnless(mapping._p_changed)
         self.failUnless(mapping._p_joined)

@@ -25,4 +25,4 @@ setup(name='Products.mcdutils',
       namespace_packages=['Products'],
       include_package_data=True,
       zip_safe=False,
-      install_requires=['setuptools'])
+      install_requires=['setuptools', 'Zope2'])
