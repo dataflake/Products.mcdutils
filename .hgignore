@@ -1,3 +1,9 @@
 syntax:glob
+develop-eggs
+src/mcdutils.egg-info
+.installed.cfg
+var
+bin
+parts
 *.swp
 *.pyc
