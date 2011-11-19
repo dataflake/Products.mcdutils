@@ -1,8 +1,8 @@
 Changes
 =======
 
-0.2 (unreleased)
-----------------
+0.2b1 (unreleased)
+------------------
 
 - Turn product into an egg and release on PyPI.
 
