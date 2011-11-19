@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2b1 (unreleased)
+0.2b1 (2011-11-19)
 ------------------
 
 - Turn product into an egg and release on PyPI.
