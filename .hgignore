@@ -1,6 +1,6 @@
 syntax:glob
 develop-eggs
-src/mcdutils.egg-info
+src/*.egg-info
 .installed.cfg
 var
 bin

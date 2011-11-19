@@ -1,24 +1,33 @@
-mcdutils Product Changelog
+Changes
+=======
 
-  After mcdutils-0.1
+0.2 (unreleased)
+----------------
 
-    - mapping.py: Added 'getContainerKey' method to 'MemCacheMapping' in
-      order to make it compatible with the API of the TemporaryFolder version
-      (allows the session testing rig code can generate error messages).
+- Turn product into an egg and release on PyPI.
 
-    - Added (preliminary) RAMCacheManager replacement.
+- Implement a forced refresh of the in-process cache of memcache data at the
+  end of transactions to avoid stale data.
 
-    - Removed  proxy's 'create' method, to allow other multiple of data to be
-      stored.  The session data container now handles instantiating the
-      mapping.
+- mapping.py: Added 'getContainerKey' method to 'MemCacheMapping' in
+  order to make it compatible with the API of the TemporaryFolder version
+  (allows the session testing rig code can generate error messages).
 
-    - Fixed the pickling of mappings *correctly*, instead of requiring that
-      the proxy pick out the 'data' member.
+- Added (preliminary) RAMCacheManager replacement.
 
-    - Expanded API for IProxy to expose more of the memcached client API.
+- Removed  proxy's 'create' method, to allow other multiple of data to be
+  stored.  The session data container now handles instantiating the
+  mapping.
 
-  mcdutils-0.1 (2006/05/31)
+- Fixed the pickling of mappings *correctly*, instead of requiring that
+  the proxy pick out the 'data' member.
 
-    - CVS tag, 'mcdutils-0_1'
+- Expanded API for IProxy to expose more of the memcached client API.
 
-    - Initial public release.
+
+0.1 (2006-05-31)
+----------------
+
+- CVS tag, 'mcdutils-0_1'
+
+- Initial public release.
