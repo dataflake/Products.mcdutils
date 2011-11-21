@@ -4,6 +4,7 @@ src/*.egg-info
 .installed.cfg
 var
 bin
+dist
 parts
 *.swp
 *.pyc
