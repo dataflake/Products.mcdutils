@@ -4,7 +4,7 @@ Changes
 0.2b3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Extend MANIFEST.in to include other missing files (.gif, .pt, .txt)
 
 
 0.2b2 (2011-11-21)
