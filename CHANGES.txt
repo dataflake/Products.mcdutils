@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2b2 (unreleased)
+0.2b2 (2011-11-21)
 ------------------
 
 - Fix source distribution by including README.txt and CHANGES.txt via

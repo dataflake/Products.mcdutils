@@ -5,7 +5,7 @@ history = open('CHANGES.txt').read()
 long_description = readme + '\n\n' + history
 
 setup(name='Products.mcdutils',
-      version='0.2b2dev',
+      version='0.2b2',
       description='A Zope2 product which provides facilities for storing sessions in memcached.',
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
