@@ -2,6 +2,7 @@
 import transaction
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import Explicit
 from persistent.mapping import PersistentMapping
 from transaction.interfaces import IDataManager
 from zope.interface import implementedBy
@@ -9,7 +10,7 @@ from zope.interface import implementer
 
 
 @implementer(IDataManager + implementedBy(PersistentMapping))
-class MemCacheMapping(PersistentMapping):
+class MemCacheMapping(Explicit, PersistentMapping):
     """ memcache-based mapping which manages its own transactional semantics
     """
     security = ClassSecurityInfo()

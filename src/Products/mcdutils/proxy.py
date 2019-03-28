@@ -30,6 +30,11 @@ class MemCacheProxy(SimpleItem, PropertyManager):
 
     _v_cached = None
     _v_client = None
+    zmi_icon = 'fas fa-tachometer-alt'
+
+    def __init__(self, id, title=''):
+        self.id = id
+        self.title = title
 
     def _get_cached(self):
         if self._v_cached is None:
@@ -70,7 +75,8 @@ class MemCacheProxy(SimpleItem, PropertyManager):
     #   ZMI
     #
     meta_type = 'MemCache Proxy'
-    _properties = ({'id': 'servers', 'type': 'lines', 'mode': 'w'},)
+    _properties = ({'id': 'title', 'type': 'string', 'mode': 'w'},
+                   {'id': 'servers', 'type': 'ulines', 'mode': 'w'})
 
     manage_options = (PropertyManager.manage_options
                       + SimpleItem.manage_options)
@@ -200,14 +206,14 @@ class MemCacheProxy(SimpleItem, PropertyManager):
 InitializeClass(MemCacheProxy)
 
 
-def addMemCacheProxy(dispatcher, id, REQUEST):
+def addMemCacheProxy(dispatcher, id, title='', REQUEST=None):
     """ Add a MCP to dispatcher.
     """
-    proxy = MemCacheProxy()
-    proxy._setId(id)
-    dispatcher._setObject(id, proxy)
-    REQUEST['RESPONSE'].redirect('%s/manage_workspace'
-                                 % dispatcher.absolute_url())
+    dispatcher._setObject(id, MemCacheProxy(id, title=title))
+
+    if REQUEST is not None:
+        REQUEST['RESPONSE'].redirect('%s/manage_workspace'
+                                     % dispatcher.absolute_url())
 
 
 addMemCacheProxyForm = PageTemplateFile('www/add_mcp.pt', globals())

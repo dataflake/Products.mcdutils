@@ -17,7 +17,7 @@ class MemCacheProxyTests(unittest.TestCase):
         verifyClass(IMemCacheProxy, self._getTargetClass())
 
     def test__cached(self):
-        proxy = self._makeOne()
+        proxy = self._makeOne('proxy')
 
         self.assertEqual(proxy._cached, {})
 
@@ -25,7 +25,7 @@ class MemCacheProxyTests(unittest.TestCase):
         self.assertEqual(proxy._cached, {'foo': 'bar'})
 
     def test_client(self):
-        proxy = self._makeOne()
+        proxy = self._makeOne('proxy')
 
         self.assertIsNotNone(proxy.client)
 
@@ -33,7 +33,7 @@ class MemCacheProxyTests(unittest.TestCase):
         self.assertEqual(proxy.client, 'x')
 
     def test__servers(self):
-        proxy = self._makeOne()
+        proxy = self._makeOne('proxy')
 
         self.assertEqual(proxy.servers, ())
         proxy.servers = ('srv',)

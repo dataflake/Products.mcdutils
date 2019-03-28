@@ -27,8 +27,8 @@ class MemCacheSessionDataTests(unittest.TestCase):
             import MemCacheSessionDataContainer
         return MemCacheSessionDataContainer
 
-    def _makeOne(self, with_proxy=True, *args, **kw):
-        sdc = self._getTargetClass()(*args, **kw)
+    def _makeOne(self, id, title='', with_proxy=True):
+        sdc = self._getTargetClass()(id, title=title)
         if with_proxy:
             sdc.dummy_proxy = DummyProxy()
             sdc.proxy_path = 'dummy_proxy'
@@ -45,13 +45,13 @@ class MemCacheSessionDataTests(unittest.TestCase):
         verifyClass(IMemCacheSessionDataContainer, self._getTargetClass())
 
     def test_empty(self):
-        sdc = self._makeOne()
+        sdc = self._makeOne('mcsdc')
         self.assertFalse(sdc.has_key('foobar'))  # NOQA: flake8: W601
         self.assertIsNone(sdc.get('foobar'))
 
     def test_invalid_proxy_raises_MemCacheError(self):
         from Products.mcdutils import MemCacheError
-        sdc = self._makeOne(with_proxy=False)
+        sdc = self._makeOne('mcsdc', with_proxy=False)
         self.assertRaises(MemCacheError,
                           sdc.has_key, 'foobar')  # NOQA: flake8: W601
         self.assertRaises(MemCacheError, sdc.get, 'foobar')
@@ -60,7 +60,7 @@ class MemCacheSessionDataTests(unittest.TestCase):
     def test_new_or_existing_returns_txn_aware_mapping(self):
         from persistent.mapping import PersistentMapping
         from transaction.interfaces import IDataManager
-        sdc = self._makeOne()
+        sdc = self._makeOne('mcsdc')
         created = sdc.new_or_existing('foobar')
         self.assertTrue(isinstance(created, PersistentMapping))
         jar = created._p_jar
@@ -68,12 +68,12 @@ class MemCacheSessionDataTests(unittest.TestCase):
         self.assertTrue(IDataManager.providedBy(jar))
 
     def test_has_key_after_new_or_existing_returns_True(self):
-        sdc = self._makeOne()
+        sdc = self._makeOne('mcsdc')
         sdc.new_or_existing('foobar')
         self.assertTrue(sdc.has_key('foobar'))  # NOQA: flake8: W601
 
     def test_get_after_new_or_existing_returns_same(self):
-        sdc = self._makeOne()
+        sdc = self._makeOne('mcsdc')
         created = sdc.new_or_existing('foobar')
         self.assertTrue(sdc.get('foobar') is created)
 

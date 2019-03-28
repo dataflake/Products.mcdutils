@@ -13,7 +13,11 @@ Change log
 
 - package configuration cleanup
 
-- full flake8 compliance
+- full ``flake8`` compliance
+
+- add ability to set a title for a MemcacheProxy
+
+- add ability to set a title for a MemcacheSessionDataContainer
 
 
 0.2b3 (2011-11-21)

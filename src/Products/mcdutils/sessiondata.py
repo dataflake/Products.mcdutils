@@ -20,6 +20,11 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
 
     _v_proxy = None
     proxy_path = None
+    zmi_icon = 'far fa-clock'
+
+    def __init__(self, id, title=''):
+        self.id = id
+        self.title = title
 
     def _get_proxy(self):
         if self._v_proxy is None:
@@ -104,14 +109,14 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
 InitializeClass(MemCacheSessionDataContainer)
 
 
-def addMemCacheSessionDataContainer(dispatcher, id, REQUEST):
+def addMemCacheSessionDataContainer(dispatcher, id, title='', REQUEST=None):
     """ Add a MCSDC to dispatcher.
     """
-    sdc = MemCacheSessionDataContainer()
-    sdc._setId(id)
-    dispatcher._setObject(id, sdc)
-    REQUEST['RESPONSE'].redirect('%s/manage_workspace'
-                                 % dispatcher.absolute_url())
+    dispatcher._setObject(id, MemCacheSessionDataContainer(id, title=title))
+
+    if REQUEST is not None:
+        REQUEST['RESPONSE'].redirect('%s/manage_workspace'
+                                     % dispatcher.absolute_url())
 
 
 addMemCacheSessionDataContainerForm = PageTemplateFile('www/add_mcsdc.pt',

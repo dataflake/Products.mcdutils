@@ -49,8 +49,6 @@ import socket
 import sys
 import time
 
-import six
-
 
 __author__ = 'Evan Martin <martine@danga.com>'
 __version__ = '1.2_tummy6'
@@ -315,7 +313,7 @@ class Client:
         self._statlog(cmd)
 
         flags = 0
-        if isinstance(val, six.string_types):
+        if isinstance(val, str):
             pass
         elif isinstance(val, int):
             flags |= Client._FLAG_INTEGER
@@ -575,7 +573,7 @@ if __name__ == '__main__':
     mc = Client(servers, debug=1)
 
     def to_s(val):
-        if not isinstance(val, six.string_types):
+        if not isinstance(val, str):
             return '%s (%s)' % (val, type(val))
         return '%s' % val
 

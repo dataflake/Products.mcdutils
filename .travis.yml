@@ -1,35 +1,20 @@
 language: python
-sudo: false
-python:
-    - 2.7
-    - 3.5
-    - 3.6
 
 matrix:
     include:
-        - python: "3.7"
-          dist: xenial
-        - python: "3.8-dev"
-          dist: xenial
+        - python: "2.7"
+          env: TOXENV=lint
+        - python: "2.7"
+          env: TOXENV=py27
 
 install:
-    - pip install -U setuptools>=36.2
-    - pip install zc.buildout
-    - pip install -U coverage coveralls
-    - pip install -U six==$(curl $(awk '$1 ==  "extends" {print $3}' buildout.cfg) 2>/dev/null | awk '$1 == "six" {print $3}')
-    - buildout bootstrap
-    - buildout
+    - travis_retry pip install -U pip setuptools
+    - travis_retry pip install -U tox
 
 script:
-    - coverage run bin/test -v1
-
-after_success:
-    - coveralls
-
-notifications:
-    email: false
+    - travis_retry tox
 
 cache:
   pip: true
   directories:
-- eggs/
+    - eggs/
