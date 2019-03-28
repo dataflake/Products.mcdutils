@@ -2,6 +2,9 @@
 import unittest
 
 
+KEY = 'key1'
+
+
 class MemCacheProxyTests(unittest.TestCase):
 
     def _getTargetClass(self):
@@ -10,6 +13,12 @@ class MemCacheProxyTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
+
+    def _makeOneWithMemcache(self, *args, **kw):
+        from .helpers import DummyMemcache
+        proxy = self._getTargetClass()(*args, **kw)
+        proxy._v_client = DummyMemcache()
+        return proxy
 
     def test_conforms_to_IMemCacheProxy(self):
         from zope.interface.verify import verifyClass
