@@ -42,8 +42,12 @@ def aggregateKey(ob, view_name='', request=None, request_names=(),
     for key, val in local_keys.items():
         local_index.append('%s:%s' % (str(key), str(val)))
 
-    return '|'.join((path, str(view_name), ','.join(request_index),
-                     ','.join(sorted(local_index))))
+    full_key = '|'.join((path, str(view_name),
+                         ','.join(request_index),
+                         ','.join(sorted(local_index))))
+
+    # Memcache does not like  blank spaces in keys
+    return full_key.replace(' ', '_')
 
 
 @implementer(IZCache)
