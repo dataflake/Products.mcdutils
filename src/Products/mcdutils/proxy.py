@@ -91,7 +91,7 @@ class MemCacheProxy(SimpleItem, PropertyManager):
         if mapping is None:
             mapping = self._get_remote(key)
 
-        if mapping is not None:
+        if isinstance(mapping, MemCacheMapping):
             # Force this mapping to clean up after the transaction.
             mapping.register(mapping)
 

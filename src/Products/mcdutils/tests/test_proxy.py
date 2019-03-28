@@ -48,6 +48,57 @@ class MemCacheProxyTests(unittest.TestCase):
         self.assertIsNone(getattr(proxy, '_v_client', None))
         self.assertIsNone(getattr(proxy, '_v_cache', None))
 
+    def test_create(self):
+        from ..mapping import MemCacheMapping
+        proxy = self._makeOne('proxy')
+
+        created = proxy.create(KEY)
+        self.assertIsInstance(created, MemCacheMapping)
+
+    def test_get_set(self):
+        proxy = self._makeOneWithMemcache('proxy')
+
+        self.assertIsNone(proxy.get(KEY))
+        self.assertTrue(proxy.set(KEY, proxy.create(KEY)))
+        self.assertEqual(proxy.get(KEY), {})
+
+        # This should also work when setting values that are
+        # not MemCacheMapping instances
+        KEY2 = b'key2'
+        self.assertIsNone(proxy.get(KEY2))
+        self.assertTrue(proxy.set(KEY2, {'foo': 'bar'}))
+        self.assertEqual(proxy.get(KEY2), {'foo': 'bar'})
+
+    def test_get_multi(self):
+        proxy = self._makeOneWithMemcache('proxy')
+
+        self.assertEqual(proxy.get_multi([KEY, b'key2']),
+                         {KEY: None, b'key2': None})
+
+    def test_add(self):
+        proxy = self._makeOneWithMemcache('proxy')
+
+        self.assertTrue(proxy.add(KEY, proxy.create(KEY)))
+        self.assertEqual(proxy.get(KEY), {})
+
+    def test_replace(self):
+        proxy = self._makeOneWithMemcache('proxy')
+
+        self.assertIsNone(proxy.replace(KEY, proxy.create(KEY)))
+        self.assertIsNone(proxy.get(KEY))
+
+        self.assertTrue(proxy.set(KEY, proxy.create(KEY)))
+        self.assertEqual(proxy.get(KEY), {})
+
+    def test_delete(self):
+        proxy = self._makeOneWithMemcache('proxy')
+
+        self.assertIsNone(proxy.delete(KEY), proxy.create(KEY))
+
+        self.assertTrue(proxy.set(KEY, proxy.create(KEY)))
+        self.assertTrue(proxy.delete(KEY))
+        self.assertIsNone(proxy.get(KEY))
+
 
 def test_suite():
     suite = unittest.TestSuite()
