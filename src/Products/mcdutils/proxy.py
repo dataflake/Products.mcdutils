@@ -76,7 +76,7 @@ class MemCacheProxy(SimpleItem, PropertyManager):
     #
     meta_type = 'MemCache Proxy'
     _properties = ({'id': 'title', 'type': 'string', 'mode': 'w'},
-                   {'id': 'servers', 'type': 'ulines', 'mode': 'w'})
+                   {'id': 'servers', 'type': 'lines', 'mode': 'w'})
 
     manage_options = (PropertyManager.manage_options
                       + SimpleItem.manage_options)
