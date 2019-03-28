@@ -3,6 +3,7 @@ Change log
 
 1.1 (unreleased)
 ----------------
+- add ability to set a title for a MemCacheZCacheManager
 
 
 1.0 (2019-03-28)

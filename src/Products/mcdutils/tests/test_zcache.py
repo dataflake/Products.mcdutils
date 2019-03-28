@@ -161,8 +161,7 @@ class MemCacheZCacheManagerTests(unittest.TestCase):
         return MemCacheZCacheManager
 
     def _makeOne(self, *args, **kw):
-        mczc = self._getTargetClass()(*args, **kw)
-        return mczc
+        return self._getTargetClass()(*args, **kw)
 
     def test_conforms_to_IZCacheManager(self):
         from zope.interface.verify import verifyClass
@@ -170,8 +169,17 @@ class MemCacheZCacheManagerTests(unittest.TestCase):
 
         verifyClass(IZCacheManager, self._getTargetClass())
 
+    def test__init__(self):
+        mgr = self._makeOne('zcache', title='ZCache Manager')
+
+        self.assertEqual(mgr.getId(), 'zcache')
+        self.assertEqual(mgr.title, 'ZCache Manager')
+        self.assertEqual(mgr.getProperty('title'), 'ZCache Manager')
+        self.assertEqual(mgr.getProperty('proxy_path'), '')
+        self.assertEqual(mgr.getProperty('request_names'), ())
+
     def test_ZCacheManager_getCache_with_proxy(self):
-        mgr = self._makeOne()
+        mgr = self._makeOne('zcache')
         mgr.dummy_proxy = DummyProxy()
         mgr.proxy_path = 'dummy_proxy'
         mgr.request_names = ('foo', 'bar')

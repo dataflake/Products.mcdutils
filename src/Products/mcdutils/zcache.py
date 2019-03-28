@@ -119,14 +119,16 @@ class MemCacheZCacheManager(CacheManager, SimpleItem, PropertyManager):
     security = ClassSecurityInfo()
 
     _v_proxy = None
-    proxy_path = None
+    proxy_path = ''
     request_names = ()
+    zmi_icon = 'fas fa-forward'
 
     #
     #   ZMI
     #
     meta_type = 'MemCache Cache Manager'
     _properties = (
+        {'id': 'title', 'type': 'string', 'mode': 'w'},
         {'id': 'proxy_path', 'type': 'string', 'mode': 'w'},
         {'id': 'request_names', 'type': 'lines', 'mode': 'w'},
     )
@@ -135,11 +137,15 @@ class MemCacheZCacheManager(CacheManager, SimpleItem, PropertyManager):
                       + CacheManager.manage_options
                       + SimpleItem.manage_options)
 
+    def __init__(self, id, title=''):
+        self.id = id
+        self.title = title
+
     def _get_proxy(self):
         if self._v_proxy is None:
-            if self.proxy_path is None:
+            if not self.proxy_path:
                 # import late to avoid cycle
-                from Products.mcdutils import MemCacheError
+                from . import MemCacheError
                 raise MemCacheError('No proxy defined')
             self._v_proxy = self.unrestrictedTraverse(self.proxy_path)
         return self._v_proxy
@@ -155,14 +161,14 @@ class MemCacheZCacheManager(CacheManager, SimpleItem, PropertyManager):
 InitializeClass(MemCacheZCacheManager)
 
 
-def addMemCacheZCacheManager(dispatcher, id, REQUEST):
+def addMemCacheZCacheManager(dispatcher, id, title='', REQUEST=None):
     """ Add a MCSDC to dispatcher.
     """
-    zcm = MemCacheZCacheManager()
-    zcm._setId(id)
-    dispatcher._setObject(id, zcm)
-    REQUEST['RESPONSE'].redirect('%s/manage_workspace'
-                                 % dispatcher.absolute_url())
+    dispatcher._setObject(id, MemCacheZCacheManager(id, title=title))
+
+    if REQUEST is not None:
+        REQUEST['RESPONSE'].redirect('%s/manage_workspace'
+                                     % dispatcher.absolute_url())
 
 
 addMemCacheZCacheManagerForm = PageTemplateFile('www/add_mczcm.pt', globals())
