@@ -19,7 +19,7 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
     security = ClassSecurityInfo()
 
     _v_proxy = None
-    proxy_path = None
+    proxy_path = ''
     zmi_icon = 'far fa-clock'
 
     def __init__(self, id, title=''):
@@ -28,7 +28,7 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
 
     def _get_proxy(self):
         if self._v_proxy is None:
-            if self.proxy_path is None:
+            if not self.proxy_path:
                 from Products.mcdutils import MemCacheError
                 raise MemCacheError('No proxy defined')
             self._v_proxy = self.unrestrictedTraverse(self.proxy_path)

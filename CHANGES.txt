@@ -5,8 +5,6 @@ Change log
 ----------------
 - Zope 4 compatibility
 
-- Python 3 compatibility
-
 - documentation using Sphinx
 
 - ``tox`` configuration for unit, coverage and code quality tests
