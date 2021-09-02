@@ -10,7 +10,11 @@
 
   <form class="mt-4 zmi-edit zmi-text zmi-ace-brief" 
     action="addItemsToSessionForm" method="POST">
-    <legend>Add Items to Session </legend>
+    <legend>Add Items to Session 
+      <span class="font-weight-normal">
+        as space-separated key-value pairs line by line
+      </span>
+    </legend>
     <textarea id="content" data-contenttype="text" 
       class="form-control zmi-zpt zmi-code col-sm-12" 
       name="items:lines"></textarea>

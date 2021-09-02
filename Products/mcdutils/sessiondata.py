@@ -60,13 +60,15 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
         """ Add key value pairs from 'items' textarea to the session.
         """
         request = self.REQUEST
-        items = request.form.get('items', ())
+        items = request.form.get('items', [])
         session = request['SESSION']
 
         before = len(session)
         count = len(items)
 
         for line in items:
+            if not isinstance(line,bytes):
+                line = line.encode()
             k, v = line.split(b' ', 1)
             k = k.strip()
             v = v.strip()
