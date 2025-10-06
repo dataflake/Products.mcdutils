@@ -22,45 +22,204 @@ https://github.com/dataflake/Products.mcdutils
 
 Preparing the development sandbox
 ---------------------------------
-The following steps only need to be done once to install all the tools and
-scripts needed for building, packaging and testing. First, create a
-:term:`Virtual environment`. The example here uses Python 3.11, but any Python
-version supported by this package will work. Then install all the required
-tools:
+This project uses a Makefile to automate development, quality assurance, testing, and deployment tasks for a Zope application.
 
-.. code-block:: console
+Prerequisites
+-------------
 
-    $ cd Products.mcdutils
-    $ python3.11 -m venv .
-    $ bin/pip install -U pip wheel
-    $ bin/pip install -U setuptools zc.buildout tox twine
+- Python 3.11 or higher
+- ``make`` (available on most Unix-like systems)
+
+Getting Started
+---------------
+
+Initial Setup
+~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   # Set up virtual environment and install dependencies
+   make install
+
+Development
+~~~~~~~~~~~
+
+.. code-block:: bash
+
+   # Start local Zope instance (localhost:8080)
+   make start
+
+   # Access Zope console for debugging
+   make zconsole
+
+Available Commands
+------------------
+
+Development
+~~~~~~~~~~~
+
+- ``make install`` - Installs Zope and all dependencies
+- ``make start`` - Starts Zope instance on localhost:8080
+- ``make zconsole`` - Starts Zope console for debugging
+
+Code Quality
+~~~~~~~~~~~~
+
+- ``make check`` - Runs all quality checks
+- ``make format`` - Automatically formats code
+- ``make lint`` - Checks code style and standards
+- ``make manifest`` - Verifies MANIFEST.in file
+
+Testing
+~~~~~~~
+
+- ``make test`` - Runs test suite
+- ``make test-coverage`` - Runs tests with coverage report
+
+Documentation
+~~~~~~~~~~~~~
+
+- ``make docs`` - Generates HTML documentation
+- ``make watch-docs`` - Generates documentation with auto-reload
 
 
-Running the tests
------------------
-You can use ``tox`` to run the unit and integration tests in this package. The
-shipped ``tox`` configuration can run the tests for all supported platforms.
-You can read the entire long list of possible options on the
-`tox CLI interface documentation page
-<https://tox.wiki/en/latest/cli_interface.html>`_, but the following examples
-will get you started:
+Dependencies
+~~~~~~~~~~~~
 
-.. code-block:: console
+- ``make dependency-graph`` - Generates dependency graph (SVG)
+- ``make dependency-circular`` - Checks for circular dependencies
 
-    $ bin/tox -l       # List all available environments
-    $ bin/tox -pall    # Run tests for all environments in parallel
-    $ bin/tox -epy311  # Run tests on Python 3.11 only
-    $ bin/tox -elint   # Run package sanity checks and lint the code
+Release
+~~~~~~~
 
+- ``make changelog`` - Shows changelog draft
+- ``make release`` - Publishes new package version
 
-Building the documentation
---------------------------
-``tox`` is also used to build the :term:`Sphinx`-based documentation. The
-input files are in the `docs` subfolder and the documentation build step will
-compile them to HTML. The output is stored in `docs/_build/html/`:
+Configuration
+~~~~~~~~~~~~~
 
-.. code-block:: console
+- ``make config`` - Creates Zope instance configuration
+- ``make pre-commit`` - Installs pre-commit hooks
 
-    $ bin/tox -edocs
+Cleanup
+~~~~~~~
 
-If the documentation contains doctests they are run as well.
+- ``make clean`` - Removes temporary files and builds
+
+Configuration
+-------------
+
+Environment Variables
+~~~~~~~~~~~~~~~~~~~~~
+
+- ``PYTHON`` - Defines Python interpreter (default: python3)
+
+Project Structure
+~~~~~~~~~~~~~~~~~
+
+- ``.venv/`` - Python virtual environment
+- ``instance/`` - Zope instance configuration
+- ``src/`` - Project source code
+- ``docs/`` - Documentation
+
+Dependencies
+------------
+
+The project uses:
+
+- **Zope** 5.13
+- **uv** - Fast package manager
+- **mxdev** - Dependency management
+- **Ruff** - Linter and formatter
+- **Pytest** - Testing framework
+- **Sphinx** - Documentation generation
+
+Testing
+-------
+
+.. code-block:: bash
+
+   # Run basic tests
+   make test
+
+   # Run tests with coverage
+   make test-coverage
+
+Documentation
+-------------
+
+.. code-block:: bash
+
+   # Generate documentation
+   make docs
+
+   # Develop documentation with auto-reload
+   make watch-docs
+
+Deployment and Release
+----------------------
+
+Release Process
+~~~~~~~~~~~~~~~
+
+1. Check changes:
+
+   .. code-block:: bash
+
+      make changelog
+
+2. Execute release:
+
+   .. code-block:: bash
+
+      make release
+
+Code Quality
+------------
+
+The project follows Plone standards for code quality:
+
+.. code-block:: bash
+
+   # Complete verification
+   make check
+
+   # Formatting only
+   make format
+
+   # Linting only
+   make lint
+
+Maintenance
+-----------
+
+Environment Cleanup
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   make clean
+
+Removes:
+
+- Python cache files
+- Temporary builds
+- Coverage reports
+- Virtual environment
+- Temporary dependency files
+
+Development
+-----------
+
+Recommended Setup
+~~~~~~~~~~~~~~~~~
+
+1. Run ``make pre-commit`` to install pre-commit hooks
+2. Use ``make check`` before committing
+3. Run ``make test`` to verify functionality
+
+Dependency Checks
+~~~~~~~~~~~~~~~~~
+- ``make dependency-graph`` - Visualizes project dependencies
+- ``make dependency-circular`` - Detects circular dependencies
+

@@ -10,8 +10,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-""" Unit tests for Products.mcdutils.sessiondata """
-import unittest
 
 
 class DummyClient:
@@ -32,60 +30,70 @@ class DummyProxy:
     get = _get
 
 
-class MemCacheSessionDataTests(unittest.TestCase):
-
+class TestMemCacheSessionData:
     def _getTargetClass(self):
-        from ..sessiondata import MemCacheSessionDataContainer
+        from Products.mcdutils.sessiondata import MemCacheSessionDataContainer
+
         return MemCacheSessionDataContainer
 
-    def _makeOne(self, id, title='', with_proxy=True):
-        sdc = self._getTargetClass()(id, title=title)
+    def _makeOne(self, id_, title="", with_proxy=True):
+        sdc = self._getTargetClass()(id_, title=title)
         if with_proxy:
             sdc.dummy_proxy = DummyProxy()
-            sdc.proxy_path = 'dummy_proxy'
+            sdc.proxy_path = "dummy_proxy"
         return sdc
 
     def test_conforms_to_ISessionDataContainer(self):
+        from Products.mcdutils.interfaces import ISessionDataContainer
         from zope.interface.verify import verifyClass
 
-        from ..interfaces import ISessionDataContainer
         verifyClass(ISessionDataContainer, self._getTargetClass())
 
     def test_conforms_to_IMemCacheSessionDataContainer(self):
+        from Products.mcdutils.interfaces import IMemCacheSessionDataContainer
         from zope.interface.verify import verifyClass
 
-        from ..interfaces import IMemCacheSessionDataContainer
         verifyClass(IMemCacheSessionDataContainer, self._getTargetClass())
 
     def test_empty(self):
-        sdc = self._makeOne('mcsdc')
-        self.assertFalse(sdc.has_key('foobar'))  # NOQA: W601
-        self.assertIsNone(sdc.get('foobar'))
+        sdc = self._makeOne("mcsdc")
+        assert not sdc.has_key("foobar")
+        assert sdc.get("foobar") is None
 
     def test_invalid_proxy_raises_MemCacheError(self):
-        from .. import MemCacheError
-        sdc = self._makeOne('mcsdc', with_proxy=False)
-        self.assertRaises(MemCacheError,
-                          sdc.has_key, 'foobar')  # NOQA: W601
-        self.assertRaises(MemCacheError, sdc.get, 'foobar')
-        self.assertRaises(MemCacheError, sdc.new_or_existing, 'foobar')
+        from Products.mcdutils import MemCacheError
+
+        sdc = self._makeOne("mcsdc", with_proxy=False)
+        import pytest
+
+        with pytest.raises(MemCacheError):
+            sdc.has_key("foobar")
+        import pytest
+
+        with pytest.raises(MemCacheError):
+            sdc.get("foobar")
+        import pytest
+
+        with pytest.raises(MemCacheError):
+            sdc.new_or_existing("foobar")
 
     def test_new_or_existing_returns_txn_aware_mapping(self):
         from persistent.mapping import PersistentMapping
         from transaction.interfaces import IDataManager
-        sdc = self._makeOne('mcsdc')
-        created = sdc.new_or_existing('foobar')
-        self.assertTrue(isinstance(created, PersistentMapping))
+
+        sdc = self._makeOne("mcsdc")
+        created = sdc.new_or_existing("foobar")
+        assert isinstance(created, PersistentMapping)
         jar = created._p_jar
-        self.assertFalse(jar is None)
-        self.assertTrue(IDataManager.providedBy(jar))
+        assert jar is not None
+        assert IDataManager.providedBy(jar)
 
     def test_has_key_after_new_or_existing_returns_True(self):
-        sdc = self._makeOne('mcsdc')
-        sdc.new_or_existing('foobar')
-        self.assertTrue(sdc.has_key('foobar'))  # NOQA: W601
+        sdc = self._makeOne("mcsdc")
+        sdc.new_or_existing("foobar")
+        assert sdc.has_key("foobar")
 
     def test_get_after_new_or_existing_returns_same(self):
-        sdc = self._makeOne('mcsdc')
-        created = sdc.new_or_existing('foobar')
-        self.assertTrue(sdc.get('foobar') is created)
+        sdc = self._makeOne("mcsdc")
+        created = sdc.new_or_existing("foobar")
+        assert sdc.get("foobar") is created

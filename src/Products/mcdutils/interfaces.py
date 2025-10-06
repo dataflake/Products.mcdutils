@@ -10,27 +10,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-""" Products.mcdutils interfaces """
+"""Products.mcdutils interfaces"""
+
 from transaction.interfaces import ISavepointDataManager
 from zope.interface import Attribute
 from zope.interface import Interface
 
 
 class ISessionDataContainer(Interface):
-    """ Document the implied interface expected by Zope's SessionDataManager.
-    """
+    """Document the implied interface expected by Zope's SessionDataManager."""
+
     def has_key(key):
-        """ Return True if the container has the key, else False.
-        """
+        """Return True if the container has the key, else False."""
 
     def new_or_existing(key):
-        """ Return a mapping for 'key', creating it if needed.
+        """Return a mapping for 'key', creating it if needed.
 
         o The returned object must be Acquisition-wrappable.
         """
 
     def get(key):
-        """ Return a mapping for 'key'.
+        """Return a mapping for 'key'.
 
         o Return None of no mapping exists.
 
@@ -39,36 +39,36 @@ class ISessionDataContainer(Interface):
 
 
 class IMemCacheMapping(ISavepointDataManager):
-    """ Combine Python's mapping protocol with transaction management.
-    """
+    """Combine Python's mapping protocol with transaction management."""
 
 
 class IMemCacheProxy(Interface):
-    """ Manage client connection to a pool of memcached servers.
-    """
-    servers = Attribute('servers', """List of servers
+    """Manage client connection to a pool of memcached servers."""
 
-Each item is a <host>:<port> server address.""")
+    servers = Attribute(
+        "servers",
+        """List of servers
 
-    client = Attribute('client', """memcache.Client instance""")
-    client.setTaggedValue('read_only', True)
+Each item is a <host>:<port> server address.""",
+    )
+
+    client = Attribute("client", """memcache.Client instance""")
+    client.setTaggedValue("read_only", True)
 
     def get(key):
-        """ Return the value stored in the cache under 'key'.
-        """
+        """Return the value stored in the cache under 'key'."""
 
     def get_multi(keys):
-        """ Return a mapping of values stored in the cache under 'keys'.
-        """
+        """Return a mapping of values stored in the cache under 'keys'."""
 
     def set(key, value):
-        """ Store value for 'key'.
+        """Store value for 'key'.
 
         o Return a boolean to indicate success.
         """
 
     def add(key, value):
-        """ Store value (a mapping) for 'key'.
+        """Store value (a mapping) for 'key'.
 
         o Return a boolean to indicate success.
 
@@ -76,7 +76,7 @@ Each item is a <host>:<port> server address.""")
         """
 
     def replace(key, value):
-        """ Store value (a mapping) for 'key'.
+        """Store value (a mapping) for 'key'.
 
         o Return a boolean to indicate success.
 
@@ -84,7 +84,7 @@ Each item is a <host>:<port> server address.""")
         """
 
     def delete(key, time=0):
-        """ Remove the value stored in the cache under 'key'.
+        """Remove the value stored in the cache under 'key'.
 
         o 'time', if passed an integer time value (in seconds) during
           which the memcached server will block new writes to this key
@@ -95,22 +95,21 @@ Each item is a <host>:<port> server address.""")
 
 
 class IMemCacheSessionDataContainer(ISessionDataContainer):
-    """ memcache-specific SDC, using a proxy.
-    """
+    """memcache-specific SDC, using a proxy."""
+
     proxy_path = Attribute("""Path to proxy.
 
 No session operations are possible if the path is invalid.""")
 
 
 class IZCache(Interface):
-    """ Interface describing API for OFS.Cache.Cache.
-    """
+    """Interface describing API for OFS.Cache.Cache."""
+
     def ZCache_invalidate(ob):
-        """ Remove any entries from the cache for 'ob'.
-        """
+        """Remove any entries from the cache for 'ob'."""
 
     def ZCache_get(ob, view_name, keywords, mtime_func, default):
-        """ Fetch a cache entry for 'ob'.
+        """Fetch a cache entry for 'ob'.
 
         o If an object provides different views that would benefit from
           caching, it will set 'view_name', which should be treated as
@@ -131,7 +130,7 @@ class IZCache(Interface):
         """
 
     def ZCache_set(ob, data, view_name, keywords, mtime_func):
-        """ Store a value in the cache for 'ob'.
+        """Store a value in the cache for 'ob'.
 
         o 'data' is the value to be stored.
 
@@ -141,8 +140,7 @@ class IZCache(Interface):
 
 
 class IZCacheManager(Interface):
-    """ Interface describing API for OFS.Cache.CacheManager.
-    """
+    """Interface describing API for OFS.Cache.CacheManager."""
+
     def ZCacheManager_getCache():
-        """ Return an object implementing IZCache.
-        """
+        """Return an object implementing IZCache."""

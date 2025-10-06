@@ -1,32 +1,65 @@
 # Generated from:
-# https://github.com/zopefoundation/meta/tree/master/config/zope-product
-*.dll
-*.egg-info/
-*.profraw
+# https://github.com/plone/meta/tree/main/config/default
+# See the inline comments on how to expand/tweak this configuration file
+# python related
+*.egg-info
 *.pyc
 *.pyo
-*.so
-.coverage
-.coverage.*
-.eggs/
-.installed.cfg
-.mr.developer.cfg
-.tox/
-.vscode/
-__pycache__/
-bin/
+
+# translation related
+*.mo
+
+# tools related
 build/
+.coverage
+.*project
 coverage.xml
-develop-eggs/
-develop/
+coverage-html-report/
 dist/
 docs/_build
+__pycache__/
+.tox
+.vscode/
+node_modules/
+
+# venv / buildout related
+bin/
+develop-eggs/
 eggs/
+.eggs/
 etc/
+.installed.cfg
+include/
 lib/
 lib64
-log/
+.mr.developer.cfg
 parts/
 pyvenv.cfg
-testing.log
 var/
+local.cfg
+
+# mxdev
+/instance/
+/.make-sentinels/
+/*-mxdev.txt
+/reports/
+/sources/
+/venv/
+.installed.txt
+
+.idea
+pyvenv.cfg
+*.mo
+.env
+*/node_modules/*
+.scannerwork
+uv.lock
+dependencies.svg
+forest.dot
+forest.json
+docs/_build
+.venv/
+requirements.txt
+constraints-mxdev.txt
+requirements-mxdev.txt
+constraints-zope.txt
