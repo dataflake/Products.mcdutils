@@ -10,7 +10,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-""" Products.mcdutils session data container """
+"""Products.mcdutils session data container"""
+
+from __future__ import annotations
+
+from .interfaces import IMemCacheSessionDataContainer
+from .mapping import MemCacheMapping
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from OFS.PropertyManager import PropertyManager
@@ -20,30 +25,31 @@ from zope.interface import implementedBy
 from zope.interface import implementer
 from ZPublisher.HTTPRequest import default_encoding
 
-from .interfaces import IMemCacheSessionDataContainer
-from .mapping import MemCacheMapping
 
-
-@implementer(IMemCacheSessionDataContainer + implementedBy(SimpleItem)
-             + implementedBy(PropertyManager))
+@implementer(
+    IMemCacheSessionDataContainer
+    + implementedBy(SimpleItem)
+    + implementedBy(PropertyManager)
+)
 class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
-    """ Implement ISDC via a memcache proxy.
-    """
+    """Implement ISDC via a memcache proxy."""
+
     security = ClassSecurityInfo()
 
     _v_proxy = None
-    proxy_path = ''
-    zmi_icon = 'far fa-clock'
+    proxy_path = ""
+    zmi_icon = "far fa-clock"
 
-    def __init__(self, id, title=''):
-        self.id = id
+    def __init__(self, id_, title=""):
+        self.id = id_
         self.title = title
 
     def _get_proxy(self):
         if self._v_proxy is None:
             if not self.proxy_path:
                 from Products.mcdutils import MemCacheError
-                raise MemCacheError('No proxy defined')
+
+                raise MemCacheError("No proxy defined")
             self._v_proxy = self.unrestrictedTraverse(self.proxy_path)
         return self._v_proxy
 
@@ -52,27 +58,25 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
     #
     #   ZMI
     #
-    meta_type = 'MemCache Session Data Container'
-    _properties = (
-        {'id': 'proxy_path', 'type': 'string', 'mode': 'w'},
-    )
+    meta_type = "MemCache Session Data Container"
+    _properties = ({"id": "proxy_path", "type": "string", "mode": "w"},)
 
     manage_options = (
-        PropertyManager.manage_options
-        + ({'action': 'addItemsToSessionForm', 'label': 'Test'},)
-        + SimpleItem.manage_options)
+        PropertyManager.manage_options  # noqa: RUF005
+        + ({"action": "addItemsToSessionForm", "label": "Test"},)
+        + SimpleItem.manage_options
+    )
 
-    security.declarePublic('addItemsToSessionForm')  # NOQA: D001
-    addItemsToSessionForm = PageTemplateFile('www/add_items.pt', globals())
+    security.declarePublic("addItemsToSessionForm")
+    addItemsToSessionForm = PageTemplateFile("www/add_items.pt", globals())
 
-    security.declarePublic('addItemsToSession')  # NOQA: D001
+    security.declarePublic("addItemsToSession")
 
     def addItemsToSession(self):
-        """ Add key value pairs from 'items' textarea to the session.
-        """
+        """Add key value pairs from 'items' textarea to the session."""
         request = self.REQUEST
-        items = request.form.get('items', ())
-        session = request['SESSION']
+        items = request.form.get("items", ())
+        session = request["SESSION"]
 
         before = len(session.keys())
         count = len(items)
@@ -80,30 +84,28 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
         for line in items:
             if not isinstance(line, bytes):
                 line = line.encode(default_encoding)
-            k, v = line.split(b' ', 1)
+            k, v = line.split(b" ", 1)
             k = k.strip()
             v = v.strip()
             session[k] = v
 
         after = len(session.keys())
 
-        return 'Before: %d;  after: %d; # items: %d' % (before, after, count)
+        return f"Before: {before};  after: {after}; # items: {count}"
 
     #
     #   ISessionDataContainer implementation
     #
-    security.declarePrivate('has_key')  # NOQA: D001
+    security.declarePrivate("has_key")
 
     def has_key(self, key):
-        """ See ISessionDataContainer.
-        """
+        """See ISessionDataContainer."""
         return self._get_proxy().get(self._safe_key(key)) is not None
 
-    security.declarePrivate('new_or_existing')  # NOQA: D001
+    security.declarePrivate("new_or_existing")
 
     def new_or_existing(self, key):
-        """ See ISessionDataContainer.
-        """
+        """See ISessionDataContainer."""
         key = self._safe_key(key)
         mapping = self.get(key)
 
@@ -114,32 +116,32 @@ class MemCacheSessionDataContainer(SimpleItem, PropertyManager):
 
         return mapping
 
-    security.declarePrivate('get')  # NOQA: D001
+    security.declarePrivate("get")
 
     def get(self, key):
-        """ See ISessionDataContainer.
-        """
+        """See ISessionDataContainer."""
         return self._get_proxy().get(self._safe_key(key))
 
     def _safe_key(self, key):
-        """ Helper to ensure the key is always a binary string """
+        """Helper to ensure the key is always a binary string"""
         if isinstance(key, str):
-            key = key.encode('UTF-8')
+            key = key.encode("UTF-8")
         return key
 
 
 InitializeClass(MemCacheSessionDataContainer)
 
 
-def addMemCacheSessionDataContainer(dispatcher, id, title='', REQUEST=None):
-    """ Add a MCSDC to dispatcher.
-    """
+def addMemCacheSessionDataContainer(dispatcher, id, title="", REQUEST=None):  # noqa: A002
+    """Add a MCSDC to dispatcher."""
     dispatcher._setObject(id, MemCacheSessionDataContainer(id, title=title))
 
     if REQUEST is not None:
-        REQUEST['RESPONSE'].redirect('%s/manage_workspace'
-                                     % dispatcher.absolute_url())
+        REQUEST["RESPONSE"].redirect(
+            f"{dispatcher.absolute_url()}/manage_workspace"
+        )
 
 
-addMemCacheSessionDataContainerForm = PageTemplateFile('www/add_mcsdc.pt',
-                                                       globals())
+addMemCacheSessionDataContainerForm = PageTemplateFile(
+    "www/add_mcsdc.pt", globals()
+)

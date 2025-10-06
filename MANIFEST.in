@@ -3,8 +3,7 @@
 include *.md
 include *.rst
 include *.txt
-include buildout.cfg
-include tox.ini
+include *.py
 
 recursive-include docs *.py
 recursive-include docs *.rst

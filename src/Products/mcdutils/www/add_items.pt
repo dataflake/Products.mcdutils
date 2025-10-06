@@ -2,31 +2,45 @@
 <h1 tal:replace="structure context/manage_tabs">TABS</h1>
 
 <main class="container-fluid"
-  tal:define="updated context/addItemsToSession;">
+      tal:define="
+        updated context/addItemsToSession;
+      "
+>
 
-  <h3>Test Adding Items to Session </h3>
+  <h3>Test Adding Items to Session
+  </h3>
 
   <code tal:content="updated"></code>
 
-  <form class="mt-4 zmi-edit zmi-text zmi-ace-brief" 
-    action="addItemsToSessionForm" method="POST">
+  <form class="mt-4 zmi-edit zmi-text zmi-ace-brief"
+        action="addItemsToSessionForm"
+        method="POST"
+  >
     <legend>Add Items to Session
       <span class="font-weight-normal">
         as space-separated key-value pairs line by line
       </span>
     </legend>
-    <textarea id="content" data-contenttype="text" 
-      class="form-control zmi-zpt zmi-code col-sm-12" 
-      name="items:lines"></textarea>
+    <textarea class="form-control zmi-zpt zmi-code col-sm-12"
+              id="content"
+              name="items:lines"
+              data-contenttype="text"
+    ></textarea>
     <div class="zmi-controls">
-      <input class="btn btn-primary" type="submit" value="Add" />
-    <div>
-  </form>
+      <input class="btn btn-primary"
+             type="submit"
+             value="Add"
+      />
+      <div>
+      </div></div></form>
 
-  <table class="table table-striped table-bordered table-sm mt-4" 
-    style="width:auto;" 
-    tal:define="session request/SESSION"
-    tal:condition="session/items">
+  <table class="table table-striped table-bordered table-sm mt-4"
+         style="width:auto;"
+         tal:define="
+           session request/SESSION;
+         "
+         tal:condition="session/items"
+  >
     <thead>
       <tr>
         <th>Key</th>
@@ -44,4 +58,3 @@
 </main>
 
 <h1 tal:replace="structure context/manage_page_footer">FOOTER</h1>
-

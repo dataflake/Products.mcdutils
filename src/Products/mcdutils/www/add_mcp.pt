@@ -2,29 +2,47 @@
 
 <main class="container-fluid">
 
-  <h2 class="zmi-form-title">Add a MemCacheProxy </h2>
+  <h2 class="zmi-form-title">Add a MemCacheProxy
+  </h2>
 
-  <form action="addMemCacheProxy" method="post">
-      <div class="form-group row">
-          <label for="id" class="form-label col-sm-3 col-md-2">Id</label>
-          <div class="col-sm-9 col-md-10">
-              <input type="text" class="form-control" name="id" id="id"
-                     size="40" />
-          </div>
+  <form action="addMemCacheProxy"
+        method="post"
+  >
+    <div class="form-group row">
+      <label class="form-label col-sm-3 col-md-2"
+             for="id"
+      >Id</label>
+      <div class="col-sm-9 col-md-10">
+        <input class="form-control"
+               id="id"
+               name="id"
+               size="40"
+               type="text"
+        />
       </div>
+    </div>
 
-      <div class="form-group row">
-          <label for="title" class="form-label col-sm-3 col-md-2">Title</label>
-          <div class="col-sm-9 col-md-10">
-              <input type="text" class="form-control" name="title" id="title"
-                     size="40" />
-          </div>
+    <div class="form-group row">
+      <label class="form-label col-sm-3 col-md-2"
+             for="title"
+      >Title</label>
+      <div class="col-sm-9 col-md-10">
+        <input class="form-control"
+               id="title"
+               name="title"
+               size="40"
+               type="text"
+        />
       </div>
+    </div>
 
-      <div class="zmi-controls">
-          <input class="btn btn-primary" type="submit" name="submit"
-                 value="Add" />
-      </div>
+    <div class="zmi-controls">
+      <input class="btn btn-primary"
+             name="submit"
+             type="submit"
+             value="Add"
+      />
+    </div>
 
   </form>
 

@@ -10,14 +10,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-""" Unit test helper modules """
 
 
 class DummyMemcache(dict):
-
     def _assertKeyBinary(self, key):
         if not isinstance(key, bytes):
-            raise ValueError('Key must be binary string.')
+            raise ValueError("Key must be binary string.")
         return key
 
     def set(self, key, value):

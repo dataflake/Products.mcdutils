@@ -10,8 +10,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-""" memcache-aware transactional mapping """
-import transaction
+"""memcache-aware transactional mapping"""
+
+from __future__ import annotations
+
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from persistent.mapping import PersistentMapping
@@ -20,22 +22,25 @@ from transaction.interfaces import ISavepointDataManager
 from zope.interface import implementedBy
 from zope.interface import implementer
 
+import contextlib
+import transaction
+
 
 @implementer(ISavepointDataManager + implementedBy(PersistentMapping))
 class MemCacheMapping(PersistentMapping):
-    """ memcache-based mapping which manages its own transactional semantics
-    """
+    """memcache-based mapping which manages its own transactional semantics"""
+
     security = ClassSecurityInfo()
 
     def __init__(self, key, proxy):
         PersistentMapping.__init__(self)
         self._p_oid = hash(key)
-        self._p_jar = self   # we are our own data manager
+        self._p_jar = self  # we are our own data manager
         self._p_key = key
         self._p_proxy = proxy
         self._p_joined = False
 
-    security.setDefaultAccess('allow')
+    security.setDefaultAccess("allow")
     security.declareObjectPublic()
 
     set = PersistentMapping.__setitem__
@@ -65,99 +70,86 @@ class MemCacheMapping(PersistentMapping):
         # Overriding here to try and hide some password fields, like
         # the ZPublisher HTTPRequest class tries to do.
         new_dict = dict(self.data)
-        for key in new_dict.keys():
-            if 'passw' in key.lower():
-                new_dict[key] = '<password obscured>'
+        for key in new_dict:
+            if "passw" in key.lower():
+                new_dict[key] = "<password obscured>"
         return repr(new_dict)
 
     def has_key(self, key):
-        """ Backwards compatibility under Python 3 """
+        """Backwards compatibility under Python 3"""
         return key in self.data
 
     def getContainerKey(self):
-        """ Fake out (I)Transient API.
-        """
+        """Fake out (I)Transient API."""
         return self._p_key
 
     def _clean(self):
         # Remove from proxy cache to force an update
         # from memcached during next access.
-        try:
+        with contextlib.suppress(KeyError):
             del self._p_proxy._cached[self._p_key]
-        except KeyError:
-            pass
 
-    security.declarePrivate('abort')  # NOQA: D001
+    security.declarePrivate("abort")
 
     def abort(self, txn):
-        """ See IDataManager.
-        """
+        """See IDataManager."""
         self._clean()
 
-    security.declarePrivate('tpc_begin')  # NOQA: D001
+    security.declarePrivate("tpc_begin")
 
     def tpc_begin(self, txn):
-        """ See IDataManager.
-        """
+        """See IDataManager."""
 
-    security.declarePrivate('commit')  # NOQA: D001
+    security.declarePrivate("commit")
 
     def commit(self, txn):
-        """ See IDataManager.
-        """
+        """See IDataManager."""
 
-    security.declarePrivate('invalidate')  # NOQA: D001
+    security.declarePrivate("invalidate")
 
     def invalidate(self):
-        """ See TransientObject.
-        """
-        try:
+        """See TransientObject."""
+        with contextlib.suppress(KeyError):
             self._p_proxy.delete(self._p_key)
-        except KeyError:
-            pass
 
-    security.declarePrivate('tpc_vote')  # NOQA: D001
+    security.declarePrivate("tpc_vote")
 
     def tpc_vote(self, txn):
-        """ See IDataManager.
-        """
-        server, key = self._p_proxy.client._get_server(self._p_key)
+        """See IDataManager."""
+        server, _ = self._p_proxy.client._get_server(self._p_key)
         if server is None:
             from Products.mcdutils import MemCacheError
+
             raise MemCacheError("Can't reach memcache server!")
 
-    security.declarePrivate('tpc_finish')  # NOQA: D001
+    security.declarePrivate("tpc_finish")
 
     def tpc_finish(self, txn):
-        """ See IDataManager.
-        """
+        """See IDataManager."""
         if self._p_changed:
             self._p_proxy.set(self._p_key, self)  # no error handling
         self._p_changed = 0
         self._p_joined = False
         self._clean()
 
-    security.declarePrivate('tpc_abort')  # NOQA: D001
+    security.declarePrivate("tpc_abort")
 
     def tpc_abort(self, txn):
-        """ See IDataManager.
-        """
+        """See IDataManager."""
         self._p_joined = False
         self._p_changed = 0
         self._clean()
 
-    security.declarePrivate('sortKey')  # NOQA: D001
+    security.declarePrivate("sortKey")
 
     def sortKey(self):
-        """ See IDataManager.
-        """
-        return 'MemCacheMapping: %s' % self._p_key
+        """See IDataManager."""
+        return f"MemCacheMapping: {self._p_key}"
 
-    security.declarePrivate('register')  # NOQA: D001
+    security.declarePrivate("register")
 
     def register(self, obj):
-        """ See IPersistentDataManager
-        """
+        """See IPersistentDataManager"""
         if obj is not self:
             raise ValueError("Can't be the jar for another object.")
 
@@ -165,11 +157,10 @@ class MemCacheMapping(PersistentMapping):
             transaction.get().join(self)
             self._p_joined = True
 
-    security.declarePrivate('savepoint')  # NOQA: D001
+    security.declarePrivate("savepoint")
 
     def savepoint(self):
-        """ See ITransaction
-        """
+        """See ITransaction"""
         return MemCacheMappingSavepoint()
 
 
@@ -178,11 +169,10 @@ InitializeClass(MemCacheMapping)
 
 @implementer(IDataManagerSavepoint)
 class MemCacheMappingSavepoint:
-    """ A simple savepoint object
-    """
+    """A simple savepoint object"""
 
     def rollback(self):
-        """ Roll back a savepoint
+        """Roll back a savepoint
 
         Memcache and the python-memcached library don't have the concept
         of a rollback, so there is nothing useful to do here.
