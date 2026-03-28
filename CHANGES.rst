@@ -1,8 +1,9 @@
 Change log
 ==========
 
-5.1 (unreleased)
+5.1 (2026-03-28)
 ----------------
+
 - Ensure key 'passw' is treated as string for the 'in' check in ``__repr__``
 
 
